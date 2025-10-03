@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Heart Disease Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="bg-primary text-white text-center py-4">
+    <h2>❤️ Heart Disease Prediction</h2>
+    <p class="mb-0">Enter patient details below</p>
+  </header>
+
+  <main class="container my-5">
+  <form id="prediction-form" class="row g-3" onsubmit="return false;">
+
+      <!-- Age -->
+      <div class="col-md-4">
+        <label for="age" class="form-label">Age</label>
+        <input type="number" class="form-control" name="age" min="0" max="120" required>
+      </div>
+
+      <!-- Sex -->
+      <div class="col-md-4">
+        <label for="sex" class="form-label">Sex</label>
+        <select class="form-select" name="sex">
+          <option value="1">Male</option>
+          <option value="0">Female</option>
+        </select>
+      </div>
+
+      <!-- Chest Pain Type -->
+      <div class="col-md-4">
+        <label for="chest_pain_type" class="form-label">Chest Pain Type</label>
+        <select class="form-select" name="chest_pain_type">
+          <option value="0">Typical Angina</option>
+          <option value="1">Atypical Angina</option>
+          <option value="2">Non-anginal Pain</option>
+          <option value="3">Asymptomatic</option>
+        </select>
+      </div>
+
+      <!-- Resting Blood Pressure -->
+      <div class="col-md-4">
+        <label for="resting_blood_pressure" class="form-label">Resting Blood Pressure</label>
+        <input type="number" class="form-control" name="resting_blood_pressure" min="50" max="250" required>
+      </div>
+
+      <!-- Cholesterol -->
+      <div class="col-md-4">
+        <label for="cholesterol" class="form-label">Cholesterol</label>
+        <input type="number" class="form-control" name="cholesterol" min="100" max="600" required>
+      </div>
+
+      <!-- Fasting Blood Sugar -->
+      <div class="col-md-4">
+        <label for="fasting_blood_sugar" class="form-label">Fasting Blood Sugar</label>
+        <select class="form-select" name="fasting_blood_sugar">
+          <option value="1">True</option>
+          <option value="0">False</option>
+        </select>
+      </div>
+
+      <!-- Resting ECG -->
+      <div class="col-md-4">
+        <label for="resting_ecg" class="form-label">Resting ECG</label>
+        <select class="form-select" name="resting_ecg">
+          <option value="0">Normal</option>
+          <option value="1">ST-T Abnormality</option>
+          <option value="2">LV Hypertrophy</option>
+        </select>
+      </div>
+
+      <!-- Max Heart Rate -->
+      <div class="col-md-4">
+        <label for="max_heart_rate" class="form-label">Max Heart Rate</label>
+        <input type="number" class="form-control" name="max_heart_rate" min="50" max="220" required>
+      </div>
+
+      <!-- Exercise Induced Angina -->
+      <div class="col-md-4">
+        <label for="exercise_induced_angina" class="form-label">Exercise Induced Angina</label>
+        <select class="form-select" name="exercise_induced_angina">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+
+      <!-- ST Depression -->
+      <div class="col-md-4">
+        <label for="st_depression" class="form-label">ST Depression</label>
+        <input type="number" step="0.1" class="form-control" name="st_depression" min="0" max="10" required>
+      </div>
+
+      <!-- ST Slope -->
+      <div class="col-md-4">
+        <label for="st_slope" class="form-label">ST Slope</label>
+        <select class="form-select" name="st_slope">
+          <option value="0">Upsloping</option>
+          <option value="1">Flat</option>
+          <option value="2">Downsloping</option>
+        </select>
+      </div>
+
+      <!-- Num Major Vessels -->
+      <div class="col-md-4">
+        <label for="num_major_vessels" class="form-label">Number of Major Vessels (0–3)</label>
+        <input type="number" class="form-control" name="num_major_vessels" min="0" max="3" required>
+      </div>
+
+      <!-- Thalassemia -->
+      <div class="col-md-4">
+        <label for="thalassemia" class="form-label">Thalassemia</label>
+        <select class="form-select" name="thalassemia">
+          <option value="1">Fixed Defect</option>
+          <option value="2">Normal</option>
+          <option value="3">Reversible Defect</option>
+        </select>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="col-12 text-center mt-4">
+        <button type="submit" class="btn btn-primary px-4">🔍 Predict</button>
+      </div>
+    </form>
+
+    <!-- Results -->
+    <div id="results" class="mt-5 d-none">
+      <h4 class="text-center">🧠 Model Predictions</h4>
+      <ul id="prediction-list" class="list-group mt-3"></ul>
+    </div>
+  </main>
+
+  <footer class="text-center text-muted py-3 small">
+    &copy; 2025 Heart Disease Predictor — FastAPI + Bootstrap
+  </footer>
+
+  <script>
+ const form = document.getElementById('prediction-form');
+const resultSection = document.getElementById('results');
+const resultList = document.getElementById('prediction-list');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(form);
+  const jsonData = {};
+  formData.forEach((val, key) => {
+    jsonData[key] = parseFloat(val); // Ensure all values are numbers
+  });
+
+  try {
+    const response = await fetch("/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(jsonData)
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Backend error:", error);
+      alert("Prediction failed.");
+      return;
+    }
+
+    const data = await response.json();
+    resultList.innerHTML = '';
+    resultSection.classList.remove('d-none');
+
+    // Find the model with the highest probability
+    const highest = data.results.reduce((max, item) => {
+      return item.probability > max.probability ? item : max;
+    }, data.results[0]);
+
+    // Show only the highest probability model
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.innerHTML = `<strong>${highest.model}</strong>
+                    <span>${highest.prediction === 1 ? '🟥 Risk' : '🟩 No Risk'} 
+                    — ${Math.round(highest.probability * 100)}%</span>`;
+    resultList.appendChild(li);
+
+  } catch (error) {
+    console.error("Fetch error:", error);
+    alert("Something went wrong.");
+  }
+});
+
+</script>
+
+</body>
+</html>

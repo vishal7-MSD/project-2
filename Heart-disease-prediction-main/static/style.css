@@ -1,0 +1,74 @@
+/* Reset some default styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Header styles */
+header {
+  background: linear-gradient(90deg, #0069d9, #007bff);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main form card */
+form {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Labels */
+label.form-label {
+  font-weight: 600;
+}
+
+/* Inputs */
+input.form-control,
+select.form-select {
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Predict button */
+button[type="submit"] {
+  font-size: 1.1rem;
+  padding: 0.5rem 2rem;
+  border-radius: 8px;
+}
+
+/* Prediction results */
+#results {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Result items */
+#prediction-list li {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+/* Color indicators */
+#prediction-list li span {
+  font-weight: bold;
+}
+
+#prediction-list li span:contains("🟥") {
+  color: #dc3545;
+}
+
+#prediction-list li span:contains("🟩") {
+  color: #28a745;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid #ddd;
+  margin-top: 4rem;
+  color: #888;
+}
